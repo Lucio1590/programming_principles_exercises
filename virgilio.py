@@ -27,7 +27,7 @@ class Virgilio:
         def __init__(self):
             super().__init__("canto_number must be between 1 and 34.")
 
-    def read_canto_lines(self, canto_number: int, strip_lines: bool = False, num_lines: int = None):
+    def read_canto_lines(self, canto_number: int, strip_lines: bool = False, num_lines: int = None) -> list[str]:
         """Method that reads the lines of a canto from a file based on the canto number
         -------------------------
         Params:
@@ -52,11 +52,11 @@ class Virgilio:
 
         """
 
-        if type(canto_number) is not int:
+        if not isinstance(canto_number, int):
             raise TypeError("canto_number must be an integer")
 
         # this other error checks are not part of the exercises but are useful to me
-        if type(strip_lines) is not bool:
+        if not isinstance(strip_lines, bool):
             raise TypeError("strip_lines must be a boolean")
         if num_lines is not None and type(num_lines) is not int:
             raise TypeError("num_lines must be an integer")
@@ -80,7 +80,7 @@ class Virgilio:
             print(f"error while opening{self.directory}/Canto_{canto_number}.txt")
             return f"error while opening{self.directory}/Canto_{canto_number}.txt"
 
-    def count_verses(self, canto_number):
+    def count_verses(self, canto_number) -> int:
         """Method that counts the number of verses in a canto
         -------------------------
         Params:
@@ -105,7 +105,7 @@ class Virgilio:
         else:
             return canto_length
 
-    def count_tercets(self, canto_number):
+    def count_tercets(self, canto_number) -> int:
         """Method that counts the number of tercets in a canto
         -------------------------
         Params:
@@ -123,7 +123,7 @@ class Virgilio:
             print(e)
             return None
 
-    def count_word(self, canto_number, word):
+    def count_word(self, canto_number, word) -> int:
         """Method that counts the number of occurrences of a word in a canto
         -------------------------
         Params:
@@ -150,7 +150,7 @@ class Virgilio:
             print(e)
             return None
 
-    def get_verse_with_word(self, canto_number, word):
+    def get_verse_with_word(self, canto_number, word) -> str:
         """Method that returns the first verse that contains a word in a canto
         -------------------------
         Params:
@@ -176,7 +176,7 @@ class Virgilio:
             print(e)
             return None
 
-    def get_verses_with_word(self, canto_number, word):
+    def get_verses_with_word(self, canto_number, word) -> list[str]:
         """Method that returns all the verses that contain a word in a canto
         -------------------------
         Params:
@@ -203,7 +203,7 @@ class Virgilio:
             print(e)
             return None
 
-    def get_longest_verse(self, canto_number):
+    def get_longest_verse(self, canto_number) -> str:
         """Method that returns the longest verse in a canto
         -------------------------
         Params:
@@ -232,7 +232,7 @@ class Virgilio:
                     len_of_longest_verse = len_of_line
             return longest_verse
 
-    def get_longest_canto(self):
+    def get_longest_canto(self) -> dict:
         """Method that returns the longest canto
         -------------------------
         Returns:
@@ -241,8 +241,15 @@ class Virgilio:
             """
 
         # canto_count = len(os.listdir(self.directory))
-        # this would be usefull if we would wnato to use this method for multiple directories
+        # this would be useful if we would wnato to use this method for multiple directories
         # anyway for simplicity I will use the "magic number" 34 being common knowledge that the number of canti is 34
+
+        # It is also to be noted that we have to create a json inside the canto folder
+        # with the word counts and that the number of files
+        # would be 35 after the executions of the method that creates it
+        # the count should take that into account and only count the canti files either by not condidering the json file
+        # or by counting the files that have the "Canto_" prefix
+
         canto_count = 34
 
         longest_canto = {'canto_number': 0, 'canto_len': 0}
@@ -255,7 +262,7 @@ class Virgilio:
 
         return longest_canto
 
-    def count_words(self, canto_number, words):
+    def count_words(self, canto_number, words) -> dict:
         """Method that counts the number of occurrences of multiple words in a canto
         -------------------------
         Params:
@@ -286,7 +293,7 @@ class Virgilio:
         else:
             return response_words_count
 
-    def get_hell_verses(self):
+    def get_hell_verses(self) -> list[str]:
         """Method that returns all the verses in the Inferno
         -------------------------
         Returns:
@@ -295,17 +302,16 @@ class Virgilio:
         """
 
         # canto_count = len(os.listdir(self.directory)), explained in the get_longest_canto method
-        canto_count = 34
-
+        CANTO_COUNT = 34
         longest_canto = {'canto_number': 0, 'canto_len': 0}
         all_verses = []
-        for canto_number in range(1, canto_count + 1):
+        for canto_number in range(1, CANTO_COUNT + 1):
             canto = self.read_canto_lines(canto_number)
             for verse in canto:
                 all_verses.append(verse)
         return all_verses
 
-    def count_hell_verses(self):
+    def count_hell_verses(self) -> int:
         """Method that counts the number of verses in the Inferno
         -------------------------
         Returns:
@@ -315,7 +321,7 @@ class Virgilio:
 
         return len(self.get_hell_verses())
 
-    def get_hell_verses_mean_len(self):
+    def get_hell_verses_mean_len(self) -> float:
         """Method that calculates the mean length of the verses in the Inferno
         -------------------------
         Returns:
@@ -329,3 +335,26 @@ class Virgilio:
         for verse in verses:
             all_verses_len += len(verse.strip())
         return all_verses_len / verses_length
+
+
+# CODE USED FOR TESTS inside main.py
+#
+# from virgilio import Virgilio
+#
+# programming_principles_exercises_path = (
+#     "/Users/luciandiaconu/Documents/Repos/Lucio/programming_principles_exercises/canti")
+#
+# virgilio = Virgilio(programming_principles_exercises_path)
+#
+# print(virgilio.read_canto_lines(1)) # --> ["...","...", ...]
+# print(virgilio.count_verses(1))  # --> 136
+# print(virgilio.count_tercets(1))  # --> 45
+# print(virgilio.count_word(1, "paura"))  # --> "paura" --> 5
+# print(virgilio.get_verses_with_word(1, "paura"))  # --> "paura" --> ["...","...", ...]
+# print(virgilio.get_longest_verse(1))  # --> che ’n tutti suoi pensier piange e s’attrista;
+# print(virgilio.get_longest_canto())  # --> {'canto_number': 33, 'canto_len': 157}
+# print(virgilio.count_words(1, ["paura", "amore", "che"]))  # --> {'paura': 5, 'amore': 2, 'che': 42}
+# print(virgilio.get_hell_verses())  # --> ["...","...", ...]
+# print(virgilio.count_hell_verses())  # --> 4720
+# print(virgilio.get_hell_verses_mean_len())  # --> 36.22351694915254
+# print(virgilio.read_canto_lines(canto_number=1, strip_lines=True, num_lines=5))  # --> ["...","...", ...]
